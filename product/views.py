@@ -1,6 +1,6 @@
 
 
-#
+
 # # Create your views here.
 # class ProductList(APIView):
 #     permission_classes = (permissions.AllowAny,)
@@ -16,24 +16,19 @@
 #         serializer = ProductSerializer(product)
 #         return Response(serializer.data)
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
+
 from rest_framework.permissions import AllowAny
-from rest_framework import status, permissions
-from .models import Product
-from .serializers import ProductSerializer
+from .models import Product,Comment,Image,Category
+from .serializers import ProductSerializer, CategorySerializer, CommentSerializer, ImageSerializer
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
+
+
+# Post classes
 
 class PostListOrCreate(ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context.update({"request": self.request})
-        return context
-
 
 
 class PostDetail(RetrieveUpdateDestroyAPIView):
@@ -41,7 +36,39 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context.update({"request": self.request})
-        return context
+
+# Category classes
+
+class CategoryListOrCreate(ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [AllowAny]
+
+class CategoryDetail(RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [AllowAny]
+
+#     Comment classes
+
+class CommentListOrCreate(ListCreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [AllowAny]
+
+class CommentDetail(RetrieveUpdateDestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [AllowAny]
+
+#     Image classes
+
+class ImageListOrCreate(ListCreateAPIView):
+    queryset = Image.objects.all()
+    serializer_class = ImageSerializer
+    permission_classes = [AllowAny]
+
+class ImageDetail(RetrieveUpdateDestroyAPIView):
+    queryset = Image.objects.all()
+    serializer_class = ImageSerializer
+    permission_classes = [AllowAny]

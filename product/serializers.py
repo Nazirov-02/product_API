@@ -4,26 +4,22 @@ from product.models import Product, Comment, Image, Category
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    products = serializers.StringRelatedField(many=True, read_only=True)
     class Meta:
         model = Category
         fields = '__all__'
 
 class CommentSerializer(serializers.ModelSerializer):
+    product = serializers.CharField(source='product.name', read_only=True)
     class Meta:
         model = Comment
-        fields = ['id','comment']
+        fields = ['id','comment','product']
 
 class ImageSerializer(serializers.ModelSerializer):
-    image_url = serializers.SerializerMethodField()
+    product = serializers.CharField(source='product.name', read_only=True)
     class Meta:
         model = Image
-        fields = ['id','image','image_url']
-
-    def get_image_url(self, obj):
-        request = self.context.get('request')
-        if obj.image and request:
-            return request.build_absolute_uri(obj.image.url)
-        return None
+        fields = ['id','image','product']
 
 
 class ProductSerializer(serializers.ModelSerializer):
