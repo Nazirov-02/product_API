@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from decimal import Decimal
 from django.utils import timezone
@@ -31,6 +32,7 @@ class Product(BaseModel):
     slug = models.SlugField(max_length=100,unique=True,null=True,blank=True)
     description = models.TextField()
     price = models.IntegerField()
+    likes = models.ManyToManyField(User,related_name='likes',blank=True)
     discount = models.PositiveIntegerField()
     quantity = models.PositiveIntegerField()
 
@@ -48,7 +50,14 @@ class Product(BaseModel):
         super().save(*args, **kwargs)
 
 class Comment(BaseModel):
+    class Ratings(models.IntegerChoices):
+        ONE = 1
+        TWO = 2
+        THREE = 3
+        FOUR = 4
+        FIVE = 5
     product = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='comments',null=True,blank=True)
+    rating = models.PositiveIntegerField(Ratings.choices,default=Ratings.ONE)
     comment = models.TextField()
 
 class Image(BaseModel):

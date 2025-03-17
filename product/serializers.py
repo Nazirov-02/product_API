@@ -10,23 +10,38 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class CommentSerializer(serializers.ModelSerializer):
-    product = serializers.CharField(source='product.name', read_only=True)
+    product_name = serializers.CharField(source='product.name', read_only=True)
     class Meta:
         model = Comment
-        fields = ['id','comment','product']
+        fields = ['id','comment','product','product_name','rating']
 
 class ImageSerializer(serializers.ModelSerializer):
-    product = serializers.CharField(source='product.name', read_only=True)
+    product_name = serializers.CharField(source='product.name', read_only=True)
     class Meta:
         model = Image
-        fields = ['id','image','product']
+        fields = ['id','image','product','product_name']
 
 
 class ProductSerializer(serializers.ModelSerializer):
     images = ImageSerializer(many=True,read_only=True)
     comments = CommentSerializer(many=True,read_only=True)
-    category = serializers.CharField(source='category.title',read_only=True)
+    category_name = serializers.CharField(source='category.title',read_only=True)
+    likes = serializers.SerializerMethodField()
+    liked = serializers.SerializerMethodField()
+    avg_rating = serializers.FloatField()
+
+    def get_likes(self, instance):
+        user = self.context['request'].user
+        if not user.is_authenticated :
+          return False
+        if user not in instance.likes.all():
+            return False
+        return True
+
+    def get_liked(self, instance):
+        return [user.username for user in instance.likes.all()]
+
 
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ['likes','liked','comments','category','category_name','name','description','quantity','discount','price','images','avg_rating']

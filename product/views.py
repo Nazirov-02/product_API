@@ -1,6 +1,4 @@
-
-
-
+from django.db.models import Avg
 # # Create your views here.
 # class ProductList(APIView):
 #     permission_classes = (permissions.AllowAny,)
@@ -23,15 +21,14 @@ from .serializers import ProductSerializer, CategorySerializer, CommentSerialize
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
 
 
-# Post classes
+# Product classes
 
-class PostListOrCreate(ListCreateAPIView):
-    queryset = Product.objects.all()
+class ProductListOrCreate(ListCreateAPIView):
+    queryset = Product.objects.annotate(avg_rating=Avg('comments__rating'))
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
 
-
-class PostDetail(RetrieveUpdateDestroyAPIView):
+class ProductDetail(RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
