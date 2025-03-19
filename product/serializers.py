@@ -28,7 +28,7 @@ class ProductSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source='category.title',read_only=True)
     likes = serializers.SerializerMethodField()
     liked = serializers.SerializerMethodField()
-    avg_rating = serializers.FloatField()
+    avg_rating = serializers.FloatField(read_only=True)
 
     def get_likes(self, instance):
         user = self.context['request'].user
@@ -44,4 +44,4 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['likes','liked','comments','category','category_name','name','description','quantity','discount','price','images','avg_rating']
+        fields = ['id','likes','liked','comments','category','category_name','name','description','quantity','discount','price','images','avg_rating']

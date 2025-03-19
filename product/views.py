@@ -19,19 +19,20 @@ from rest_framework.permissions import AllowAny
 from .models import Product,Comment,Image,Category
 from .serializers import ProductSerializer, CategorySerializer, CommentSerializer, ImageSerializer
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
-
+from .permissions import CanDeletePermission
 
 # Product classes
 
 class ProductListOrCreate(ListCreateAPIView):
     queryset = Product.objects.annotate(avg_rating=Avg('comments__rating'))
     serializer_class = ProductSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [CanDeletePermission]
+
 
 class ProductDetail(RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.all()
+    queryset = Product.objects.annotate(avg_rating=Avg('comments__rating'))
     serializer_class = ProductSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [CanDeletePermission]
 
 
 # Category classes
@@ -69,3 +70,22 @@ class ImageDetail(RetrieveUpdateDestroyAPIView):
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
     permission_classes = [AllowAny]
+
+
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+
+class CustomAuthToken(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'username': user.username,
+        })

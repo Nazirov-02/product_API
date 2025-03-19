@@ -10,4 +10,5 @@ urlpatterns = [
     path('comment_list/<int:pk>/',views.CommentDetail.as_view(),name='comment_detail'),
     path('img_list/',views.ImageListOrCreate.as_view(),name='img_list'),
     path('img_list/<int:pk>/',views.ImageDetail.as_view(),name='img_detail'),
+    path('custom-token/',views.CustomAuthToken.as_view(),name='custom-token'),
 ]
