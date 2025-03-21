@@ -23,23 +23,21 @@ class ImageSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    images = ImageSerializer(many=True,read_only=True)
-    comments = CommentSerializer(many=True,read_only=True)
-    category_name = serializers.CharField(source='category.title',read_only=True)
+    images = ImageSerializer(many=True, read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
+    category_name = serializers.CharField(source='category.title', read_only=True)
     likes = serializers.SerializerMethodField()
     liked = serializers.SerializerMethodField()
     avg_rating = serializers.FloatField(read_only=True)
 
     def get_likes(self, instance):
         user = self.context['request'].user
-        if not user.is_authenticated :
-          return False
-        if user not in instance.likes.all():
+        if not user.is_authenticated:
             return False
-        return True
+        return instance.likes.filter(id=user.id).exists()
 
     def get_liked(self, instance):
-        return [user.username for user in instance.likes.all()]
+        return list(instance.likes.values_list('username', flat=True))
 
 
     class Meta:

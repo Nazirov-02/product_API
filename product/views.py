@@ -24,9 +24,12 @@ from .permissions import CanDeletePermission,CreatePermission
 # Product classes
 
 class ProductListOrCreate(ListCreateAPIView):
-    queryset = Product.objects.annotate(avg_rating=Avg('comments__rating'))
+    queryset = Product.objects.prefetch_related('likes')
     serializer_class = ProductSerializer
     permission_classes = [CanDeletePermission]
+    def get_queryset(self):
+        queryset = Product.objects.all().prefetch_related('images').prefetch_related('comments')
+        return queryset
 
 
 class ProductDetail(RetrieveUpdateDestroyAPIView):
