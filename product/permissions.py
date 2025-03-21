@@ -13,3 +13,11 @@ class CanDeletePermission(BasePermission):
             if now() - obj.created_at > timedelta(minutes=2):
                 return False
         return True
+
+class CreatePermission(BasePermission):
+    def has_permission(self, request, view):
+        if request.method == 'POST':
+            if date.today().weekday() > 4:
+                return False
+            return True
+        return True

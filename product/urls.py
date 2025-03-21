@@ -1,5 +1,6 @@
 from django.urls import path
 from product import views
+from product import customobtainview
 
 urlpatterns = [
     path('product_list',views.ProductListOrCreate.as_view(),name='product_list'),
@@ -10,5 +11,12 @@ urlpatterns = [
     path('comment_list/<int:pk>/',views.CommentDetail.as_view(),name='comment_detail'),
     path('img_list/',views.ImageListOrCreate.as_view(),name='img_list'),
     path('img_list/<int:pk>/',views.ImageDetail.as_view(),name='img_detail'),
-    path('custom-token/',views.CustomAuthToken.as_view(),name='custom-token'),
+
+    # AuthToken
+    path('login-token/',customobtainview.CustomAuthToken.as_view(),name='custom-token'),
+    path('logout/',customobtainview.CustomLogout.as_view(),name='custom-logout'),
+
+    #JWT
+    path('loginJWT/', customobtainview.LoginJWTView.as_view(), name='custom_auth_jwt'),
+    path('logoutJWT/',customobtainview.LogoutJWTView.as_view(), name='custom_auth_logout'),
 ]

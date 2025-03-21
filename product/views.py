@@ -19,7 +19,7 @@ from rest_framework.permissions import AllowAny
 from .models import Product,Comment,Image,Category
 from .serializers import ProductSerializer, CategorySerializer, CommentSerializer, ImageSerializer
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
-from .permissions import CanDeletePermission
+from .permissions import CanDeletePermission,CreatePermission
 
 # Product classes
 
@@ -40,7 +40,7 @@ class ProductDetail(RetrieveUpdateDestroyAPIView):
 class CategoryListOrCreate(ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [AllowAny]
+    permission_classes = [CreatePermission]
 
 class CategoryDetail(RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.all()
@@ -52,12 +52,12 @@ class CategoryDetail(RetrieveUpdateDestroyAPIView):
 class CommentListOrCreate(ListCreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [CreatePermission]
 
 class CommentDetail(RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [CanDeletePermission]
 
 #     Image classes
 
@@ -72,20 +72,4 @@ class ImageDetail(RetrieveUpdateDestroyAPIView):
     permission_classes = [AllowAny]
 
 
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
-from rest_framework.response import Response
 
-class CustomAuthToken(ObtainAuthToken):
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data,
-                                           context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user_id': user.pk,
-            'username': user.username,
-        })
