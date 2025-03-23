@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'debug_toolbar',
+    'drf_spectacular'
+
 ]
 
 MIDDLEWARE = [
@@ -93,7 +95,22 @@ REST_FRAMEWORK = {
 ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 100,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'My Project API',  # API nomi
+    'DESCRIPTION': 'API for My Project',  # API tavsifi
+    'VERSION': '1.0.0', }
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': 'D:/API/products_API/product/redis_cache',
+    }
+}
+
 
 
 # Password validation

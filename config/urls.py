@@ -18,13 +18,16 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
-
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('product.urls')),
+    path('api/schema/',SpectacularAPIView.as_view(),name='spectacular-admin-api'),
+path('redoc/',SpectacularRedocView.as_view(url_name='spectacular-admin-api'),name='spectacular-redoc'),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns += [
         path('__debug__/', include(debug_toolbar.urls)),
+
     ]

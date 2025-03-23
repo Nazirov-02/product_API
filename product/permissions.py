@@ -1,4 +1,4 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 from datetime import date, timedelta
 from django.utils.timezone import now
 
@@ -21,3 +21,4 @@ class CreatePermission(BasePermission):
                 return False
             return True
         return True
+
